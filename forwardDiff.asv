@@ -1,0 +1,24 @@
+function[fdiff,cdiff,error] = forwardDiff(f,df,x)
+     n = length(x);
+     h = x(2)-x(1);
+
+     fdiff=zeros(1,n);
+     cdiff =zeros(1,n);
+     error = zeros(1,n);
+     
+    % Forward Difference valid till n-1
+     for i = 1:n-1
+         fdiff(i) = (f(x(i+1))-f(x(i)))/h;
+         error(i) = df(x(i))-fdiff(i);
+     end
+     % Central Difference valid till 2 to n-1
+
+     for i = 2:n-1
+         cdiff(i) = (f(x(i+1)) - f(x(i-1)))/(2*h);
+         
+     end
+
+
+end
+
+   
