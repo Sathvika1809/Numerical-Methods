@@ -1,0 +1,66 @@
+function[] = Q_3(f,a,b,eps)
+    tic;
+    % start with 2 intervals
+    n = 2;
+    while true
+        x = linspace(a,b,n+1);
+        y = f(x);
+        h = (b-a)/n;
+        ai = zeros(n,1);
+        bi = zeros(n,1);
+        for i = 1:n
+            ai(i) = y(i);
+            bi(i) = (y(i+1)-y(i))/(x(i+1)-x(i));
+        end
+        
+
+        % dense pts for error checking
+        x_test = linspace(a,b,10000);
+        func_value = f(x_test);
+        y_approx = zeros(size(x_test));
+        
+        %evaluate piecewise linear interpolant
+        for j = 1:length(x_test)
+            %find interval idx
+            i = floor((x_test(j)-a)/h)+1;
+            if i>n
+                i=n;
+            end
+            
+            y_approx(j) = ai(i)+bi(i)*(x_test(j)-x(i));
+        end
+        % Calculate the error between the actual function values and 
+        % the approximated values
+        error = max(abs(func_value - y_approx));
+        
+        % Check if the error is within the specified tolerance
+        if error < eps
+            break; % Exit the loop if the error is acceptable
+        else
+            n = n * 2; % Double the number of intervals for better accuracy
+        end
+        cpu_time = toc;
+        figure;
+        hold on;
+        plot(x_test,func_value,'b','LineWidth',2);
+        plot(x_test,y_approx,'r--','LineWidth',2);
+        legend('Actual f(x)','Piecewise Linear Approx');
+        xlabel('x');
+        ylabel('y');
+        grid on;
+
+         % plot error
+         
+        figure;
+        plot(x_test, abs(func_value - y_approx), 'k', 'LineWidth', 2);
+        xlabel('x');
+        ylabel('Error');
+        title('Pointwise Error');
+        grid on;
+                                  
+        fprintf('Final n = %d\n', n);
+        fprintf('Maximum error = %e\n', max_error);
+        fprintf('CPU time = %f seconds\n', cpu_time);
+
+    end
+end
